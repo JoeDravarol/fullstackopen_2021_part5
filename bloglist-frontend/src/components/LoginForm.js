@@ -8,9 +8,7 @@ const loginForm = ({
   handlePasswordChange
 }) => {
   return (
-    <form onSubmit={handleLogin}>
-      <h2>Log in to application</h2>
-      
+    <form onSubmit={handleLogin}>      
       <div>
         username
         <input

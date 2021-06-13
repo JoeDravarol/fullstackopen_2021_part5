@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -29,6 +31,14 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
+  const displayNotificationWith = (message, status='success') => {
+    setNotification({ message, status })
+
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -49,7 +59,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('Incorrect credentials')
+      displayNotificationWith(exception.response.data.error, 'error')
     }
   }
 
@@ -77,30 +87,38 @@ const App = () => {
 
       const returnedBlog = await blogService.create(blog)
 
+      displayNotificationWith(
+        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
+      )
       setBlogs(blogs.concat(returnedBlog))
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (exception) {
-      console.log(exception)
+      displayNotificationWith(exception.response.data.error, 'error')
     }
   }
 
   if (user === null) {
     return (
-      <LoginForm 
-        username={username}
-        password={password}
-        handleLogin={handleLogin}
-        handleUsernameChange={handleInputOnChange(setUsername)}
-        handlePasswordChange={handleInputOnChange(setPassword)}
-      />
+      <>
+        <h2>Log in to application</h2>
+        <Notification notification={notification} />
+        <LoginForm 
+          username={username}
+          password={password}
+          handleLogin={handleLogin}
+          handleUsernameChange={handleInputOnChange(setUsername)}
+          handlePasswordChange={handleInputOnChange(setPassword)}
+        />
+      </>
     )
   }
 
   return (
     <div>
       <h2>blogs</h2>
+      <Notification notification={notification} />
       <div>
         {user.name} logged in
         <button onClick={handleLogout}>
