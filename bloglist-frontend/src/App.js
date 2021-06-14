@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.create(blogObject)
-      
+
       blogFormRef.current.toggleVisibility()
       displayNotificationWith(
         `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
@@ -121,7 +121,7 @@ const App = () => {
       <>
         <h2>Log in to application</h2>
         <Notification notification={notification} />
-        <LoginForm 
+        <LoginForm
           username={username}
           password={password}
           handleLogin={handleLogin}
@@ -148,7 +148,7 @@ const App = () => {
       </Togglable>
 
       {sortedBlogsByLikes.map(blog =>
-        <Blog 
+        <Blog
           key={blog.id}
           blog={blog}
           updateBlogLikes={updateBlog}
