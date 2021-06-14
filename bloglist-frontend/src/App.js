@@ -100,6 +100,17 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.remove(id)
+      setBlogs(
+        blogs.filter(blog => blog.id !== id)
+      )
+    } catch (exception) {
+      displayNotificationWith(exception.response.data.error, 'error')
+    }
+  }
+
   const blogFormRef = useRef()
 
   // Sort in descending order
@@ -141,6 +152,7 @@ const App = () => {
           key={blog.id}
           blog={blog}
           updateBlogLikes={updateBlog}
+          removeBlog={deleteBlog}
         />
       )}
     </div>
