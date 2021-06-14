@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -85,6 +86,8 @@ const App = () => {
         url,
       }
 
+      blogFormRef.current.toggleVisibility()
+
       const returnedBlog = await blogService.create(blog)
 
       displayNotificationWith(
@@ -98,6 +101,8 @@ const App = () => {
       displayNotificationWith(exception.response.data.error, 'error')
     }
   }
+
+  const blogFormRef = useRef()
 
   if (user === null) {
     return (
@@ -126,15 +131,17 @@ const App = () => {
         </button>
       </div>
 
-      <BlogForm
-        title={title}
-        author={author}
-        url={url}
-        handleTitleChange={handleInputOnChange(setTitle)}
-        handleAuthorChange={handleInputOnChange(setAuthor)}
-        handleUrlChange={handleInputOnChange(setUrl)}
-        addBlog={addBlog}
-      />
+      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+        <BlogForm
+          title={title}
+          author={author}
+          url={url}
+          handleTitleChange={handleInputOnChange(setTitle)}
+          handleAuthorChange={handleInputOnChange(setAuthor)}
+          handleUrlChange={handleInputOnChange(setUrl)}
+          addBlog={addBlog}
+        />
+      </Togglable>
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
