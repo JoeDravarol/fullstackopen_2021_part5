@@ -8,7 +8,10 @@ describe('<Blog />', () => {
     title: 'Testing frontend with react-testing-library',
     author: 'Tester',
     url: 'https://testing-library.com/',
-    likes: 0
+    likes: 0,
+    user: {
+      id: '1234'
+    }
   }
 
   test('renders title and author', () => {
@@ -36,5 +39,19 @@ describe('<Blog />', () => {
 
     const div = component.container.querySelector('.togglableContent')
     expect(div).not.toHaveStyle('display: none')
+  })
+
+  test('clicking the button two times calls event handler twice', () => {
+    const mockHandler = jest.fn()
+
+    const component = render(
+      <Blog blog={blog} updateBlogLikes={mockHandler} />
+    )
+
+    const button = component.getByText('like')
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })
