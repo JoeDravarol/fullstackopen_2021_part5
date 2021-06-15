@@ -1,6 +1,6 @@
 import React from 'react'
 
-const loginForm = ({ 
+const loginForm = ({
   username,
   password,
   handleLogin,
@@ -8,7 +8,7 @@ const loginForm = ({
   handlePasswordChange
 }) => {
   return (
-    <form onSubmit={handleLogin}>      
+    <form onSubmit={handleLogin}>
       <div>
         username
         <input
