@@ -44,4 +44,22 @@ describe('Blog app', function() {
       cy.get('.notification').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'tester', password: 'testing' })
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('create new blog')
+        .click()
+
+      cy.get('#title').type('a blog created by cypress')
+      cy.get('#author').type('cypress')
+      cy.get('#url').type('https://docs.cypress.io/')
+      cy.get('form').submit()
+
+      cy.contains('a blog created by cypress')
+    })
+  })
 })
