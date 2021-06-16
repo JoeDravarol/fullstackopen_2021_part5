@@ -61,5 +61,27 @@ describe('Blog app', function() {
 
       cy.contains('a blog created by cypress')
     })
+
+    describe('and a blog exists', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'another blog e2e',
+          author: 'cypress',
+          url: 'http://another.com'
+        })
+      })
+
+      it('it can be liked', function() {
+        cy.contains('another blog e2e cypress')
+          .contains('view')
+          .click()
+
+        cy.get('button')
+          .contains('like')
+          .click()
+
+        cy.contains('likes 1')
+      })
+    })
   })
 })
