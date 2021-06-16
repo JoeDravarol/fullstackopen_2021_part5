@@ -82,6 +82,45 @@ describe('Blog app', function() {
 
         cy.contains('likes 1')
       })
+
+      it('it can be deleted by the user who created it', function() {
+        cy.contains('another blog e2e cypress')
+          .contains('view')
+          .click()
+
+        cy.get('button')
+          .contains('remove')
+          .click()
+
+        cy.on('window:confirm', function(str) {
+          expect(str).to.equal('Remove blog another blog e2e by cypress')
+        })
+
+        cy.contains('another blog e2e cypress').should('not.exist')
+      })
+
+      it.only('it cannot be deleted by other user', function() {
+        const user = {
+          name: 'another user',
+          username: 'another',
+          password: 'testing'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users', user)
+        cy.login({ username: 'another', password: 'testing' })
+
+        cy.contains('another user logged in')
+
+        cy.contains('another blog e2e cypress')
+          .contains('view')
+          .click()
+
+        cy.get('button')
+          .contains('remove')
+          .click()
+
+        cy.contains('Unauthorized token')
+        cy.contains('another blog e2e cypress')
+      })
     })
   })
 })
