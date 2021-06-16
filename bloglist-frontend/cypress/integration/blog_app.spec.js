@@ -99,7 +99,7 @@ describe('Blog app', function() {
         cy.contains('another blog e2e cypress').should('not.exist')
       })
 
-      it.only('it cannot be deleted by other user', function() {
+      it('it cannot be deleted by other user', function() {
         const user = {
           name: 'another user',
           username: 'another',
@@ -120,6 +120,41 @@ describe('Blog app', function() {
 
         cy.contains('Unauthorized token')
         cy.contains('another blog e2e cypress')
+      })
+    })
+
+    describe('and several blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'first blog', author: 'cypress1',
+          url: 'http://first.com/', likes: 1
+        })
+        cy.createBlog({
+          title: 'second blog', author: 'cypress2',
+          url: 'http://second.com/', likes: 2
+        })
+        cy.createBlog({
+          title: 'third blog', author: 'cypress3',
+          url: 'http://third.com/', likes: 5
+        })
+      })
+
+      it('it ordered blogs according to likes (most likes first)', function() {
+        cy.get('.blog')
+          .each(($blog) => {
+            cy.wrap($blog).contains('view').click()
+          })
+
+        cy.get('.blog')
+          .should(blogs => {
+            expect(blogs).to.have.length(3)
+
+            const [first, second, third] = blogs
+
+            expect(first).to.contain('likes 5')
+            expect(second).to.contain('likes 2')
+            expect(third).to.contain('likes 1')
+          })
       })
     })
   })
